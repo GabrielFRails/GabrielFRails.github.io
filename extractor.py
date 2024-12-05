@@ -52,12 +52,12 @@ def get_credito_contratacao_data_per_state(infos, values):
         value = values[idx]
 
         if state not in values_per_state:
-            values_per_state[f'{state}'] = dict()
+            values_per_state[state] = dict()
         
         if linha_credito not in values_per_state[f'{state}']:
-            values_per_state[f'{state}'][f'{linha_credito}'] = dict()
+            values_per_state[state][linha_credito] = dict()
 
-        values_per_state[f'{state}'][f'{linha_credito}'] = Decimal(value.replace(',', '.'))
+        values_per_state[state][linha_credito] = Decimal(value.replace(',', '.'))
     
     return values_per_state
 
