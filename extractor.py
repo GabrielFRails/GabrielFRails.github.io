@@ -48,20 +48,23 @@ def get_credito_contratacao_data_per_state(infos, values):
 
         info_splited = info.split('_')
         state = info_splited[-1]
+        linha_credito = info_splited[-2]
         value = values[idx]
 
-        if state in values_per_state:
-            values_per_state[f'{state}'] += Decimal(value.replace(',', '.'))
-            continue
+        if state not in values_per_state:
+            values_per_state[f'{state}'] = dict()
+        
+        if linha_credito not in values_per_state[f'{state}']:
+            values_per_state[f'{state}'][f'{linha_credito}'] = dict()
 
-        values_per_state[f'{state}'] = Decimal(value.replace(',', '.'))
+        values_per_state[f'{state}'][f'{linha_credito}'] = Decimal(value.replace(',', '.'))
     
     return values_per_state
 
 def main():
     dates, infos, values = extract_data_from_csv()
     data = get_credito_contratacao_data_per_state(infos, values)
-    print(data, data.keys())
+    print(data['sp'], data.keys())
 
 if __name__ == '__main__':
     main()
