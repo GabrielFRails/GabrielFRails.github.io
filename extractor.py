@@ -1,5 +1,6 @@
 import csv
 from decimal import Decimal, getcontext
+from pprint import pprint
 
 # precisao
 getcontext().prec = 50
@@ -79,7 +80,8 @@ def get_credito_contratacao_data_per_state(dates, infos, values):
 def main():
     dates, infos, values = extract_data_from_csv()
     data = get_credito_contratacao_data_per_state(dates, infos, values)
-    print(data['sp'])
+    print("dados de sp")
+    pprint(data['sp'], indent=2)
 
 if __name__ == '__main__':
     main()
