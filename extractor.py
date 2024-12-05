@@ -40,9 +40,12 @@ def extract_data_from_csv():
 #    print(f"sum of lines with pf and pj: {lines_with_pf + lines_with_pj}")
 #    print(f"lines without classification: {total_lines - (lines_with_pf + lines_with_pj)}")
 
-def values_per_state(infos, values):
+def get_credito_contratacao_data_per_state(infos, values):
     values_per_state = dict()
     for idx, info in enumerate(infos):
+        if not info.startswith('credito_contratacao_contratado_pf'):
+            continue
+
         info_splited = info.split('_')
         state = info_splited[-1]
         value = values[idx]
@@ -66,7 +69,7 @@ def main():
     lines without classification: 33998
     """
 
-    data = values_per_state(infos, values)
+    data = get_credito_contratacao_data_per_state(infos, values)
     print(data, data.keys())
 
 if __name__ == '__main__':
