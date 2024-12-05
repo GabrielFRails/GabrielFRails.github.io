@@ -1,4 +1,5 @@
 import csv
+import json
 from decimal import Decimal, getcontext
 from pprint import pprint
 
@@ -72,8 +73,10 @@ def get_credito_contratacao_data_per_state(dates, infos, values):
         
         if linha_credito not in values_per_state[state][periodo]:
             values_per_state[state][periodo][linha_credito] = dict()
+            values_per_state[state][periodo][linha_credito] = float(Decimal(value.replace(',', '.')))
+            continue
 
-        values_per_state[state][periodo][linha_credito] = Decimal(value.replace(',', '.'))
+        values_per_state[state][periodo][linha_credito] += float(Decimal(value.replace(',', '.')))
     
     return values_per_state
 
@@ -82,6 +85,9 @@ def main():
     data = get_credito_contratacao_data_per_state(dates, infos, values)
     print("dados de sp")
     pprint(data['sp'], indent=2)
+
+    with open('./visualization/v.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
 
 if __name__ == '__main__':
     main()
