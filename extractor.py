@@ -59,16 +59,7 @@ def get_credito_contratacao_data_per_state(infos, values):
     return values_per_state
 
 def main():
-    print("amigo estou aqui")
     dates, infos, values = extract_data_from_csv()
-
-    """
-    check_csv_info_column(infos)
-    total_lines: 358869, lines_with_pf : 225577, lines_with_pj: 99294
-    sum of lines with pf and pj: 324871
-    lines without classification: 33998
-    """
-
     data = get_credito_contratacao_data_per_state(infos, values)
     print(data, data.keys())
 
