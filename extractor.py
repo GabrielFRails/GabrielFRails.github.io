@@ -40,7 +40,16 @@ def extract_data_from_csv():
 #    print(f"sum of lines with pf and pj: {lines_with_pf + lines_with_pj}")
 #    print(f"lines without classification: {total_lines - (lines_with_pf + lines_with_pj)}")
 
-def get_credito_contratacao_data_per_state(infos, values):
+def get_periodo_pandemico(date):
+    year = int(date.split('-')[0])
+    if year < 2019:
+        return 'pre_pandemia'
+    if year > 2019 and year < 2023:
+        return 'pandemia'
+    if year > 2022:
+        return 'pos_pandemia'
+
+def get_credito_contratacao_data_per_state(dates, infos, values):
     values_per_state = dict()
     for idx, info in enumerate(infos):
         if not info.startswith('credito_contratacao_contratado_pf'):
@@ -50,21 +59,27 @@ def get_credito_contratacao_data_per_state(infos, values):
         state = info_splited[-1]
         linha_credito = info_splited[-2]
         value = values[idx]
+        date = dates[idx]
 
         if state not in values_per_state:
             values_per_state[state] = dict()
         
-        if linha_credito not in values_per_state[f'{state}']:
-            values_per_state[state][linha_credito] = dict()
+        # pré pandemia < 2020 | pandemia 2020/2022 | pós pandemia > 2022
+        periodo = get_periodo_pandemico(date)
+        if periodo not in values_per_state[f'{state}']:
+            values_per_state[state][periodo] = dict()
+        
+        if linha_credito not in values_per_state[state][periodo]:
+            values_per_state[state][periodo][linha_credito] = dict()
 
-        values_per_state[state][linha_credito] = Decimal(value.replace(',', '.'))
+        values_per_state[state][periodo][linha_credito] = Decimal(value.replace(',', '.'))
     
     return values_per_state
 
 def main():
     dates, infos, values = extract_data_from_csv()
-    data = get_credito_contratacao_data_per_state(infos, values)
-    print(data['sp'], data.keys())
+    data = get_credito_contratacao_data_per_state(dates, infos, values)
+    print(data['sp'])
 
 if __name__ == '__main__':
     main()
