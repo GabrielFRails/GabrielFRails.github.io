@@ -43,7 +43,7 @@ def extract_data_from_csv():
 
 def get_periodo_pandemico(date):
     year = int(date.split('-')[0])
-    if year < 2019:
+    if year < 2020:
         return 'pre_pandemia'
     if year > 2019 and year < 2023:
         return 'pandemia'
