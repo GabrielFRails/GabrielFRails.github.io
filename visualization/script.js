@@ -12,10 +12,15 @@ function formatCurrency(value) {
     }).format(value);
 }
 
+const sumFieldsPerPeriod = (periods, data) =>
+    periods.map(period =>
+        Object.values(data[period]).reduce((sum, value) => sum + value, 0)
+    );
+
 document.addEventListener("DOMContentLoaded", async () => {
     const data = await loadJson();
-    const states = Object.keys(data).filter(state => state !== 'br'); // Excluindo 'br' que parece ser uma soma nacional
-    const categories = ["comercial", "fgts", "equity", "livre", "sfh"];
+    const states = Object.keys(data).sort(); // Excluindo 'br' que parece ser uma soma nacional
+    const categories = ["comercial", "fgts", "equity", "livre", "sfh", "total"];
 
     const stateSelector = document.getElementById('stateSelector');
     states.forEach(state => {
@@ -46,6 +51,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         "pos_pandemia": "#ed7d31"
     };
 
+    const labelMap = {
+        "pre_pandemia": "Pré-pandemia",
+        "pandemia": "Pandemia",
+        "pos_pandemia": "Pós-pandemia"
+    }
+
     function createChart(stateData, category, elementId) {
         const svg = d3.select(`#${elementId}`)
             .append("svg")
@@ -54,7 +65,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const periods = ["pre_pandemia", "pandemia", "pos_pandemia"];
 
-        const values = periods.map(p => stateData[p][category]);
+        const values = category == 'total' ?
+            sumFieldsPerPeriod(periods, stateData) :
+            periods.map(p => stateData[p][category]);
 
         const x = d3.scaleBand()
             .range([0, 380])
@@ -75,8 +88,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         .attr("class", "bar")
         .attr("x", d => x(d))
         .attr("width", x.bandwidth())
-        .attr("y", d => y(stateData[d][category]))
-        .attr("height", d => 180 - y(stateData[d][category]))
+        .attr("y", d => y(values[periods.indexOf(d)]))
+        .attr("height", d => 180 - y(values[periods.indexOf(d)]))
         .attr("fill", d => colorMap[d]) // Define a cor inicial
         .on("mouseover", function(event, d) {
             const currentColor = d3.select(this).attr("fill");
@@ -84,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             tooltip.transition()
                 .duration(200)
                 .style("opacity", .9);
-            tooltip.html(d + ": " + formatCurrency(stateData[d][category]))
+            tooltip.html(labelMap[d] + ": " + formatCurrency(stateData[d][category]))
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 10) + "px");
         })
@@ -98,11 +111,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 .duration(500)
                 .style("opacity", 0);
         });
-    
 
         svg.append("g")
             .attr("transform", "translate(120,180)")
-            .call(d3.axisBottom(x));
+            .call(d3.axisBottom(x).tickFormat(d => labelMap[d]));
 
         svg.append("g")
             .attr("transform", "translate(120, 0)")

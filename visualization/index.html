@@ -7,7 +7,14 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <select id="stateSelector"></select>
+    <h1>Mercado Imobiliário</h1>
+    <p>Esta visualização compara os valores de crédito imobiliário contratados por pessoa física no Brasil.</p>
+    <p>Cada gráfico representa uma linha de crédito e está separado em três períodos: pré-pandemia, pandemia e pós-pandemia.</p>
+    <p>O gráfico de título "TOTAL" corresponde à soma dos valores negociados em todas as linhas de crédito.</p>
+    <div class="selectorContainer">
+        <p>Selecione o estado ou "BR" para visualizar os dados nacionais: </p>
+        <select id="stateSelector"></select>
+    </div>
     <div id="charts"></div>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="script.js"></script>

@@ -9,8 +9,17 @@ body {
     background-color: #f0f0f0;
 }
 
+p {
+    margin: 3px 0;
+}
+
+.selectorContainer{
+    display: flex;
+    align-items: center;
+}
+
 #stateSelector {
-    margin: 20px 0;
+    margin: 20px 0 20px 10px;
     padding: 10px;
     font-size: 16px;
 }
@@ -18,7 +27,8 @@ body {
 #charts {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px; /* Espaço entre os gráficos */
+    column-gap: 10px; /* Espaço entre os gráficos */
+    row-gap: 70px;
     width: 90%; /* Para limitar a largura total para manter a proporção */
     margin: 0 auto; /* Centraliza o grid */
 }
@@ -28,6 +38,7 @@ body {
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    min-height: fit-content;
 }
 
 .chart svg {
