@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             tooltip.transition()
                 .duration(200)
                 .style("opacity", .9);
-            tooltip.html(labelMap[d] + ": " + formatCurrency(stateData[d][category]))
+            tooltip.html(labelMap[d] + ": " + formatCurrency(values[periods.indexOf(d)]))
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 10) + "px");
         })
