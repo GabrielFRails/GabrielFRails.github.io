@@ -1,0 +1,65 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #f0f0f0;
+}
+
+#stateSelector {
+    margin: 20px 0;
+    padding: 10px;
+    font-size: 16px;
+}
+
+#charts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px; /* Espaço entre os gráficos */
+    width: 90%; /* Para limitar a largura total para manter a proporção */
+    margin: 0 auto; /* Centraliza o grid */
+}
+
+.chart {
+    background: #D3D3D3;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.chart svg {
+    visibility: visible;
+    display: block;
+    width: 100%; /* Ajusta para ocupar toda a largura do pai */
+    height: 100%; /* Ou um valor específico que corresponda à altura do gráfico */
+    overflow: visible;
+}
+
+.chart h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/*.bar {
+    fill: steelblue;
+}
+
+.bar:hover {
+    fill: #0077cc;
+}*/
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 120px;
+    height: 30px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
