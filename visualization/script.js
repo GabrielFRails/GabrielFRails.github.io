@@ -8,7 +8,9 @@ function formatCurrency(value) {
     return new Intl.NumberFormat('pt-BR', { 
         style: 'currency', 
         currency: 'BRL', 
-        minimumFractionDigits: 0
+        minimumFractionDigits: 0,
+        notation: 'compact',
+        compactDisplay: 'short'
     }).format(value);
 }
 
@@ -16,6 +18,12 @@ const sumFieldsPerPeriod = (periods, data) =>
     periods.map(period =>
         Object.values(data[period]).reduce((sum, value) => sum + value, 0)
     );
+
+// function highlightState(selectedState) {
+//     console.log(selectedState)
+//     d3.select(`#line-chart`).select("svg").selectAll('.line')
+//         .attr('stroke-width', d => d.estado === selectedState ? 2 : 1);
+// }
 
 document.addEventListener("DOMContentLoaded", async () => {
     const data = await loadJson();
@@ -30,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         stateSelector.add(option);
     });
 
-    const chartsDiv = document.getElementById('charts');
+    const chartsDiv = document.getElementById('bar-charts');
 
     categories.forEach(category => {
         let div = document.createElement('div');
@@ -57,13 +65,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         "pos_pandemia": "Pós-pandemia"
     }
 
-    function createChart(stateData, category, elementId) {
+    const periods = ["pre_pandemia", "pandemia", "pos_pandemia"];
+
+    function createBarChart(stateData, category, elementId) {
         const svg = d3.select(`#${elementId}`)
             .append("svg")
             .attr("width", 800)
             .attr("height", 200);
-
-        const periods = ["pre_pandemia", "pandemia", "pos_pandemia"];
 
         const values = category == 'total' ?
             sumFieldsPerPeriod(periods, stateData) :
@@ -121,17 +129,98 @@ document.addEventListener("DOMContentLoaded", async () => {
             .call(d3.axisLeft(y).tickFormat(d => formatCurrency(d)).ticks(5));
     }
 
+    function createLineChart() {
+        const values = states.map(s => {
+            return {
+                state: s.toUpperCase(), // Convertendo siglas para uppercase
+                values: sumFieldsPerPeriod(periods, data[s])
+            };
+        });
+    
+        const svg = d3.select(`#line-chart`)
+            .append("svg")
+            .attr("width", 900)
+            .attr("height", 700); // Aumentei a altura do gráfico
+    
+        const margin = { top: 20, right: 70, bottom: 90, left: 70 };
+        const width = 900 - margin.left - margin.right;
+        const height = 700 - margin.top - margin.bottom;
+    
+        const g = svg.append("g")
+            .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    
+        // Escala X
+        const x = d3.scalePoint()
+            .range([0, width])
+            .domain(periods);
+    
+        // Escala Y (Logarítmica para melhor distribuição)
+        const maxValue = d3.max(values.flatMap(d => d.values));
+        const minValue = d3.min(values.flatMap(d => d.values));
+        const y = d3.scaleLog()
+            .base(10)
+            .domain([minValue, maxValue]) // O valor mínimo de 1 evita problemas com log(0)
+            .range([height, 0])
+            .nice();
+    
+        // Adicionar eixo X
+        g.append('g')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(x).tickFormat(d => labelMap[d]))
+            .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-0.8em")
+            .attr("dy", "0.15em")
+            .attr("transform", "rotate(-45)");
+    
+        // Adicionar eixo Y com formatação compacta
+        g.append('g')
+            .call(d3.axisLeft(y).tickFormat(d => formatCurrency(d)).ticks(5)); // Notação compacta para valores grandes
+    
+        // Desenhando as linhas segmentadas
+        values.forEach(d => {
+            const lineData = d.values;
+    
+            for (let i = 0; i < lineData.length - 1; i++) {
+                const segment = [lineData[i], lineData[i + 1]];
+    
+                g.append("path")
+                    .datum(segment)
+                    .attr("d", d3.line()
+                        .x((_, j) => x(periods[i + j])) // Corrigido o cálculo de x para os índices dos períodos
+                        .y(v => y(v))
+                    )
+                    .attr("fill", "none")
+                    .attr("stroke", segment[1] > segment[0] ? "green" : "orange") // Verde se aumento, vermelho se diminuição
+                    .attr("stroke-width", 1);
+            }
+        });
+    
+        // Adicionando labels para os estados
+        values.forEach(d => {
+            g.append("text")
+                .attr("x", x(periods[periods.length - 1]) + 5) // Corrigido o cálculo para posicionar o texto corretamente
+                .attr("y", y(d.values[periods.length - 1]))
+                .attr("dy", "0.35em")
+                .text(d.state)
+                .style("font-size", "10px")
+                .style("fill", "black");
+        });
+    }    
+
     stateSelector.addEventListener('change', (e) => {
         const selectedState = e.target.value;
         categories.forEach(category => {
             d3.select(`#chart_${category}`).select("svg").remove(); // Limpa o SVG antigo
-            createChart(data[selectedState], category, `chart_${category}`);
+            createBarChart(data[selectedState], category, `chart_${category}`);
         });
+        // highlightState(selectedState.toUpperCase())
     });
 
     // Inicializa com o primeiro estado
     if (states.length > 0) {
         stateSelector.value = states[0];
         stateSelector.dispatchEvent(new Event('change'));
+        createLineChart()
     }
 });

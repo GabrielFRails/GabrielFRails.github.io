@@ -24,13 +24,17 @@ p {
     font-size: 16px;
 }
 
-#charts {
+#bar-charts {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     column-gap: 10px; /* Espaço entre os gráficos */
     row-gap: 70px;
     width: 90%; /* Para limitar a largura total para manter a proporção */
     margin: 0 auto; /* Centraliza o grid */
+}
+
+#line-chart {
+    margin-top: 80px;
 }
 
 .chart {
