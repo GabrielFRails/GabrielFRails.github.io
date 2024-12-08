@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crédito Imobiliário Pessoa Física</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Crédito Imobiliário Pessoa Física</h1>
+    <p>Esta visualização compara os valores de crédito imobiliário contratados por pessoa física no Brasil.</p>
+    <p>Cada gráfico de barras representa uma linha de crédito e está separado em três períodos: pré-pandemia, pandemia e pós-pandemia.</p>
+    <small>O gráfico de título "TOTAL" corresponde à soma dos valores negociados em todas as linhas de crédito.</small>
+    </br>
+    <p>O gráfico de linha compara os totais por estado. Os segmentos em verde representam aumento do total no período, e em laranja redução.</p>
+    <div class="selectorContainer">
+        <p>Selecione o estado ou "BR" para visualizar os dados nacionais: </p>
+        <select id="stateSelector"></select>
+    </div>
+    <div id="bar-charts"></div>
+    <div id="line-chart"></div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

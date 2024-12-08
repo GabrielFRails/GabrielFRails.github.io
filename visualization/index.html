@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +7,12 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Mercado Imobiliário</h1>
-    <p>Esta visualização compara os valores de crédito imobiliário contratados por pessoa física no Brasil.</p>
-    <p>Cada gráfico de barras representa uma linha de crédito e está separado em três períodos: pré-pandemia, pandemia e pós-pandemia.</p>
-    <small>O gráfico de título "TOTAL" corresponde à soma dos valores negociados em todas as linhas de crédito.</small>
-    </br>
-    <p>O gráfico de linha compara os totais por estado. Os segmentos em verde representam aumento do total no período, e em laranja redução.</p>
-    <div class="selectorContainer">
-        <p>Selecione o estado ou "BR" para visualizar os dados nacionais: </p>
-        <select id="stateSelector"></select>
-    </div>
-    <div id="bar-charts"></div>
-    <div id="line-chart"></div>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="script.js"></script>
+    <h1>Mercado Imobiliário Brasileiro</h1>
+    <p>Nos links abaixo, estão disponíveis três visualizações com dados sobre o mercado imobiliário brasileiro:</p>
+    <ul>
+        <li><a href="/visualization/credito_por_estado_pf.html">Valores de crédito imobiliário contratados por pessoa física</a></li>
+        <li><a href="/visualization/graficos_credito_interativos.html">Valores totais de crédito imobiliário por estado</a></li>
+        <li><a href="/visualization/taxas_contratacao_monthly_mean.html">Média das taxas de contratação de crédito PF e PJ</a></li>
+    </ul>
 </body>
 </html>
