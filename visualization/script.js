@@ -19,12 +19,14 @@ const sumFieldsPerPeriod = (periods, data) =>
         Object.values(data[period]).reduce((sum, value) => sum + value, 0)
     );
 
-// function highlightState(selectedState) {
-//     console.log(selectedState)
-//     d3.select(`#line-chart`).select("svg").selectAll('.line')
-//         .attr('stroke-width', d => d.estado === selectedState ? 2 : 1);
-// }
-
+function highlightState(selectedState) {
+    d3.select(`#line-chart`).select("svg").selectAll('path')
+        .attr('stroke-width', function() {
+            const state = d3.select(this).attr('state');
+            return state === selectedState ? 4 : 1;
+        })
+}
+    
 document.addEventListener("DOMContentLoaded", async () => {
     const data = await loadJson();
     const states = Object.keys(data).sort(); // Excluindo 'br' que parece ser uma soma nacional
@@ -187,12 +189,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 g.append("path")
                     .datum(segment)
                     .attr("d", d3.line()
-                        .x((_, j) => x(periods[i + j])) // Corrigido o cálculo de x para os índices dos períodos
+                        .x((_, j) => x(periods[i + j]))
                         .y(v => y(v))
                     )
                     .attr("fill", "none")
-                    .attr("stroke", segment[1] > segment[0] ? "green" : "orange") // Verde se aumento, vermelho se diminuição
-                    .attr("stroke-width", 1);
+                    .attr("stroke", segment[1] > segment[0] ? "green" : "orange")
+                    .attr("stroke-width", 1)
+                    .attr("state", d.state);
             }
         });
     
@@ -214,13 +217,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             d3.select(`#chart_${category}`).select("svg").remove(); // Limpa o SVG antigo
             createBarChart(data[selectedState], category, `chart_${category}`);
         });
-        // highlightState(selectedState.toUpperCase())
+        highlightState(selectedState.toUpperCase())
     });
 
     // Inicializa com o primeiro estado
     if (states.length > 0) {
         stateSelector.value = states[0];
-        stateSelector.dispatchEvent(new Event('change'));
         createLineChart()
+        stateSelector.dispatchEvent(new Event('change'));
     }
 });
